@@ -1,27 +1,25 @@
 {
-  "publisher": "antfu",
-  "name": "ext-name",
-  "displayName": "ext-name",
-  "version": "0.0.0",
+  "publisher": "fe92star",
+  "name": "yapi-mock-server",
+  "displayName": "yapi-mock-server",
+  "version": "0.0.2",
   "private": true,
   "packageManager": "pnpm@8.6.0",
-  "description": "",
-  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "description": "Mock server for yapi platform",
+  "author": "fe92star <1737765939@qq.com> (https://github.com/fe92star/)",
   "license": "MIT",
-  "funding": "https://github.com/sponsors/antfu",
-  "homepage": "https://github.com/antfu/ext-name#readme",
+  "homepage": "https://github.com/FE92star/mock-helper#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/antfu/ext-name"
+    "url": "https://github.com/FE92star/mock-helper"
   },
   "bugs": {
-    "url": "https://github.com/antfu/ext-name/issues"
+    "url": "https://github.com/FE92star/mock-helper/issues"
   },
-  "sponsor": {
-    "url": "https://github.com/sponsors/antfu"
-  },
-  "categories": [
-    "Other"
+  "keywords": [
+    "mock",
+    "yapi",
+    "server"
   ],
   "main": "./dist/index.js",
   "icon": "res/icon.png",
@@ -32,18 +30,149 @@
     "vscode": "^1.78.1"
   },
   "activationEvents": [
-    "onStartupFinished"
+    "onView:YapiMockServer"
   ],
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "YapiMockServer",
+          "name": "Yapi-Mock小助手"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "YapiMockServer.search",
+        "title": "Search for matching api",
+        "shortTitle": "Search",
+        "icon": {
+          "dark": "resources/dark/search.svg",
+          "light": "resources/light/search.svg"
+        }
+      },
+      {
+        "command": "YapiMockServer.clearApiFilter",
+        "title": "Clear filter",
+        "shortTitle": "Clear",
+        "icon": {
+          "dark": "resources/dark/clear.svg",
+          "light": "resources/light/clear.svg"
+        }
+      },
+      {
+        "command": "YapiMockServer.refresh",
+        "title": "Fetch the newest api list",
+        "shortTitle": "Refresh",
+        "icon": {
+          "dark": "resources/dark/refresh.svg",
+          "light": "resources/light/refresh.svg"
+        }
+      },
+      {
+        "command": "YapiMockServer.runServer",
+        "title": "Start a mock server",
+        "shortTitle": "Run",
+        "icon": {
+          "dark": "resources/dark/play.svg",
+          "light": "resources/light/play.svg"
+        }
+      },
+      {
+        "command": "YapiMockServer.stopServer",
+        "title": "Stop the active mock server",
+        "shortTitle": "Stop",
+        "icon": {
+          "dark": "resources/dark/pause.svg",
+          "light": "resources/light/pause.svg"
+        }
+      },
+      {
+        "command": "YapiMockServer.openAndUpdateApiJsonToLocal",
+        "title": "Open and update json data to local project",
+        "shortTitle": "OpenJson",
+        "icon": {
+          "dark": "resources/dark/json.svg",
+          "light": "resources/light/json.svg"
+        }
+      },
+      {
+        "command": "YapiMockServer.copyApiInfo",
+        "title": "copy current api infomation",
+        "shortTitle": "Copy",
+        "icon": {
+          "dark": "resources/dark/copy.svg",
+          "light": "resources/light/copy.svg"
+        }
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "YapiMockServer.runServer",
+          "when": "view == YapiMockServer && !serverEnable",
+          "group": "navigation"
+        },
+        {
+          "command": "YapiMockServer.stopServer",
+          "when": "view == YapiMockServer && serverEnable",
+          "group": "navigation"
+        },
+        {
+          "command": "YapiMockServer.refresh",
+          "when": "view == YapiMockServer",
+          "group": "navigation"
+        },
+        {
+          "command": "YapiMockServer.search",
+          "when": "view == YapiMockServer",
+          "group": "navigation"
+        },
+        {
+          "command": "YapiMockServer.clearApiFilter",
+          "when": "view == YapiMockServer && filterEnable",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "YapiMockServer.openAndUpdateApiJsonToLocal",
+          "when": "view == YapiMockServer && viewItem == coreApiItem",
+          "group": "inline"
+        },
+        {
+          "command": "YapiMockServer.copyApiInfo",
+          "when": "view == YapiMockServer && viewItem == subApiItem",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Yapi Mock Server Config",
+      "properties": {
+        "YapiMockServer.mock.rootDir": {
+          "type": "string",
+          "default": "${workspaceFolder}/mock",
+          "description": "mock 文件自动生成的根目录"
+        },
+        "YapiMockServer.mock.port": {
+          "type": "number",
+          "default": 10088,
+          "description": "mock 服务监听的端口"
+        }
+      }
+    }
+  },
   "scripts": {
     "build": "tsup src/index.ts --external vscode",
-    "dev": "nr build --watch",
+    "dev": "npm run build --watch",
     "lint": "eslint .",
-    "vscode:prepublish": "nr build",
+    "vscode:prepublish": "npm build",
     "publish": "vsce publish --no-dependencies",
     "pack": "vsce package --no-dependencies",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "release": "bumpp && nr publish"
+    "release": "bumpp && npm publish"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
