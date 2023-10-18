@@ -1,5 +1,5 @@
-export const APP_PREFIX = '[MOCK小助手]'
+import { APP_NAME_PREFIX } from '../adapters'
 
 export function warn(msg: string) {
-  return `${APP_PREFIX}${msg}`
+  return `${APP_NAME_PREFIX}${msg}`
 }

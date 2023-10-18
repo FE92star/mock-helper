@@ -1,11 +1,10 @@
 import { ConfigurationTarget, workspace } from 'vscode'
+import { GLOBAL_APP_IDENTIFIER } from '../adapters'
 
 /**
  * 插件系统配置相关
 */
 export default class AppSysConfig {
-  identifier = 'yapiApiExplorer'
-
   rootPath = ''
   replacement: Map<RegExp, string> = new Map()
 
@@ -35,7 +34,7 @@ export default class AppSysConfig {
   }
 
   public identifierWithDot(name: string) {
-    return `${this.identifier}.${name}`
+    return `${GLOBAL_APP_IDENTIFIER}.${name}`
   }
 
   public replacePlaceholder(text: string) {
@@ -48,7 +47,7 @@ export default class AppSysConfig {
   }
 
   public getConfiguration(key: string): any {
-    const property = workspace.getConfiguration(this.identifier).get<string>(key)
+    const property = workspace.getConfiguration(GLOBAL_APP_IDENTIFIER).get<string>(key)
     if (property)
       return this.replacePlaceholder(property)
 

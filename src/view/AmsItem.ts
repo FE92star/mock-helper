@@ -19,4 +19,6 @@ export default class AmsItem extends TreeItem {
     light: path.join(__dirname, 'resources', 'light/git-commit.svg'),
     dark: path.join(__filename, 'resources', 'dark/git-commit.svg'),
   }
+
+  contextValue = 'amsItem'
 }

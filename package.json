@@ -29,21 +29,18 @@
   "engines": {
     "vscode": "^1.78.1"
   },
-  "activationEvents": [
-    "onView:YapiMockServer"
-  ],
   "contributes": {
     "views": {
       "explorer": [
         {
-          "id": "YapiMockServer",
-          "name": "Yapi-Mock小助手"
+          "id": "mockHelper",
+          "name": "MOCK小助手"
         }
       ]
     },
     "commands": [
       {
-        "command": "YapiMockServer.search",
+        "command": "mockHelper.search",
         "title": "Search for matching api",
         "shortTitle": "Search",
         "icon": {
@@ -52,7 +49,7 @@
         }
       },
       {
-        "command": "YapiMockServer.clearApiFilter",
+        "command": "mockHelper.clearApiFilter",
         "title": "Clear filter",
         "shortTitle": "Clear",
         "icon": {
@@ -61,7 +58,7 @@
         }
       },
       {
-        "command": "YapiMockServer.refresh",
+        "command": "mockHelper.refresh",
         "title": "Fetch the newest api list",
         "shortTitle": "Refresh",
         "icon": {
@@ -70,7 +67,7 @@
         }
       },
       {
-        "command": "YapiMockServer.runServer",
+        "command": "mockHelper.runServer",
         "title": "Start a mock server",
         "shortTitle": "Run",
         "icon": {
@@ -79,7 +76,7 @@
         }
       },
       {
-        "command": "YapiMockServer.stopServer",
+        "command": "mockHelper.stopServer",
         "title": "Stop the active mock server",
         "shortTitle": "Stop",
         "icon": {
@@ -88,7 +85,7 @@
         }
       },
       {
-        "command": "YapiMockServer.openAndUpdateApiJsonToLocal",
+        "command": "mockHelper.openAndUpdateApiJsonToLocal",
         "title": "Open and update json data to local project",
         "shortTitle": "OpenJson",
         "icon": {
@@ -97,7 +94,7 @@
         }
       },
       {
-        "command": "YapiMockServer.copyApiInfo",
+        "command": "mockHelper.copyApiInfo",
         "title": "copy current api infomation",
         "shortTitle": "Copy",
         "icon": {
@@ -109,56 +106,61 @@
     "menus": {
       "view/title": [
         {
-          "command": "YapiMockServer.runServer",
-          "when": "view == YapiMockServer && !serverEnable",
+          "command": "mockHelper.runServer",
+          "when": "view == mockHelper && !serverEnable",
           "group": "navigation"
         },
         {
-          "command": "YapiMockServer.stopServer",
-          "when": "view == YapiMockServer && serverEnable",
+          "command": "mockHelper.stopServer",
+          "when": "view == mockHelper && serverEnable",
           "group": "navigation"
         },
         {
-          "command": "YapiMockServer.refresh",
-          "when": "view == YapiMockServer",
+          "command": "mockHelper.refresh",
+          "when": "view == mockHelper",
           "group": "navigation"
         },
         {
-          "command": "YapiMockServer.search",
-          "when": "view == YapiMockServer",
+          "command": "mockHelper.search",
+          "when": "view == mockHelper",
           "group": "navigation"
         },
         {
-          "command": "YapiMockServer.clearApiFilter",
-          "when": "view == YapiMockServer && filterEnable",
+          "command": "mockHelper.clearApiFilter",
+          "when": "view == mockHelper && filterEnable",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "YapiMockServer.openAndUpdateApiJsonToLocal",
-          "when": "view == YapiMockServer && viewItem == coreApiItem",
+          "command": "mockHelper.openAndUpdateApiJsonToLocal",
+          "when": "view == mockHelper && viewItem == coreApiItem",
           "group": "inline"
         },
         {
-          "command": "YapiMockServer.copyApiInfo",
-          "when": "view == YapiMockServer && viewItem == subApiItem",
+          "command": "mockHelper.copyApiInfo",
+          "when": "view == mockHelper && viewItem == subApiItem",
           "group": "inline"
         }
       ]
     },
     "configuration": {
-      "title": "Yapi Mock Server Config",
+      "title": "Mock Helper Config",
       "properties": {
-        "YapiMockServer.mock.rootDir": {
+        "mockHelper.mock.rootDir": {
           "type": "string",
           "default": "${workspaceFolder}/mock",
           "description": "mock 文件自动生成的根目录"
         },
-        "YapiMockServer.mock.port": {
+        "mockHelper.mock.port": {
           "type": "number",
           "default": 10088,
           "description": "mock 服务监听的端口"
+        },
+        "mockHelper.mock.autoRun": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否在应用启动时启用 mock"
         }
       }
     }
@@ -192,6 +194,7 @@
     "vitest": "^0.31.4"
   },
   "dependencies": {
+    "dayjs": "^1.11.10",
     "request-promise-native": "^1.0.9"
   }
 }
