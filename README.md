@@ -3,6 +3,13 @@
 
 <a href="https://marketplace.visualstudio.com/items?itemName=fe92star.yapi-mock-server" target="__blank"><img src="https://img.shields.io/visual-studio-marketplace/v/fe92star.yapi-mock-server.svg?color=blue&amp;label=VS%20Code%20Marketplace&logo=visual-studio-code" alt="Visual Studio Marketplace Version" /></a>
 
+
+## 启动和发布
+```bash
+nr dev
+nr release
+```
+
 ## TODO
 
 - [x] 开发工程搭建
