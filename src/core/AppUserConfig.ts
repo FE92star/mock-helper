@@ -3,7 +3,7 @@
 import fs from 'node:fs'
 import { window } from 'vscode'
 import * as rp from 'request-promise-native'
-import { sendAppMes } from '../utils'
+import { warn } from '../utils'
 import { YAPI_LIMIT_DATA, YAPI_OEPNAPI_BASEURL, YAPI_OEPNAPI_LIST_MAP } from '../services/YapiOpenApi'
 import type { MockOptions } from '../services/types'
 import { appSysConfig } from './AppSysConfig'
@@ -43,7 +43,7 @@ export default class AppUserConfig {
       return appConfig
     }
     catch (error) {
-      window.showErrorMessage(`${sendAppMes('读取配置文件失败')}`)
+      window.showErrorMessage(`${warn('读取配置文件失败')}`)
       return null
     }
   }
@@ -60,11 +60,11 @@ export default class AppUserConfig {
   */
   private validateAppConfig(configJson: Yapi.Config.Json) {
     if (!configJson)
-      throw new Error(`${sendAppMes('启动本插件前请先在项目根目录下创建yapi-mock.config.json')}`)
+      throw new Error(`${warn('启动本插件前请先在项目根目录下创建yapi-mock.config.json')}`)
 
     const isEmptyKey = Object.values(configJson).some(v => !v)
     if (isEmptyKey)
-      throw new Error(sendAppMes('请完善配置文件的相关字段'))
+      throw new Error(warn('请完善配置文件的相关字段'))
 
     return Promise.resolve()
   }
@@ -73,7 +73,7 @@ export default class AppUserConfig {
     const conf = this.getAppConfig()
 
     await this.validateAppConfig(conf).catch(() => {
-      window.showWarningMessage(sendAppMes('请完善配置文件的相关字段'))
+      window.showWarningMessage(warn('请完善配置文件的相关字段'))
     })
   }
 
@@ -99,7 +99,7 @@ export default class AppUserConfig {
    */
   getApiConfigByPath(path: string) {
     if (!this.getAppApiMap.length)
-      throw new Error(sendAppMes('同步失败'))
+      throw new Error(warn('同步失败'))
 
     return this.getAppApiMap.find((item) => {
       const { apiPrefix } = item
@@ -151,7 +151,7 @@ export default class AppUserConfig {
     const apiConfig = this.getApiConfigByPath(path)
 
     if (!apiConfig)
-      return Promise.reject(new Error(sendAppMes('请完善配置文件信息')))
+      return Promise.reject(new Error(warn('请完善配置文件信息')))
 
     const { token } = apiConfig
 
@@ -169,7 +169,7 @@ export default class AppUserConfig {
     const apiConfig = this.getApiConfigByPath(path)
 
     if (!apiConfig) {
-      window.showErrorMessage(sendAppMes('请完善配置文件信息'))
+      window.showErrorMessage(warn('请完善配置文件信息'))
       return
     }
 
@@ -184,7 +184,7 @@ export default class AppUserConfig {
     const apiMapData = this.getAppApiMap
 
     if (!apiMapData.length)
-      return Promise.reject(new Error(sendAppMes('同步失败')))
+      return Promise.reject(new Error(warn('同步失败')))
 
     return Promise.all(apiMapData.map(item => request(item)))
   }
