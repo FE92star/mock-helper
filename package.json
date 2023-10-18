@@ -165,14 +165,14 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --external vscode",
-    "dev": "npm run build --watch",
+    "dev": "nr build --watch",
     "lint": "eslint .",
-    "vscode:prepublish": "npm build",
+    "vscode:prepublish": "nr build",
     "publish": "vsce publish --no-dependencies",
     "pack": "vsce package --no-dependencies",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "release": "bumpp && npm publish"
+    "release": "bumpp && nr publish"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
