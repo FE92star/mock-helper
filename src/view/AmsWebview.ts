@@ -23,6 +23,6 @@ export default class AmsWebview {
       return
     }
 
-    console.log(currentWebview)
+    return true
   }
 }
