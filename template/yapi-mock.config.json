@@ -1,0 +1,32 @@
+{
+  "baseUrl": "https://yapi.example.com",
+  "apiMap": [
+    {
+      "projectId": 1,
+      "apiPrefix": "/example1",
+      "token": "example1TokenString"
+    },
+    {
+      "projectId": 2,
+      "apiPrefix": ["/example2","/example3"],
+      "token": "example2TokenString"
+    }
+  ],
+  "proxy": {
+    "targets":[
+      {
+          "name": "开发环境",
+          "target": "https://dev.example.com"
+      },
+      {
+          "name": "测试环境",
+          "target": "https://test.example.com"
+      },
+      {
+        "name": "生产环境",
+        "target": "https://prod.example.com"
+      }
+    ],
+    "port": 10240
+  }
+}

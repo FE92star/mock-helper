@@ -1,9 +1,9 @@
 import { ConfigurationTarget, workspace } from 'vscode'
 
 /**
- * 插件配置相关
+ * 插件系统配置相关
 */
-export default class AppConfig {
+export default class AppSysConfig {
   identifier = 'yapiApiExplorer'
 
   rootPath = ''
@@ -16,6 +16,7 @@ export default class AppConfig {
     mockOption: 'mockOption',
     preview: 'preview',
     mock: 'mock',
+    configPath: 'configPath',
   }
 
   constructor() {
@@ -60,3 +61,5 @@ export default class AppConfig {
       .update(this.identifierWithDot(key), value, ConfigurationTarget.Global)
   }
 }
+
+export const appSysConfig = new AppSysConfig()
