@@ -7,7 +7,6 @@ import { MOCK_ACTION_TYPE, MOCK_ACTION_TYPE_NAME } from './type'
 
 // 默http认代理配置
 export const DEFAULT_PROXY_OPTION: httpProxy.ServerOptions = {
-  /** 默认将当前域名代理到目标域名 */
   changeOrigin: true,
 }
 
@@ -37,6 +36,7 @@ export default class ApiServer {
     res: http.ServerResponse,
   ) => void
 
+  // 构造器增加private参数，变为class的private属性
   constructor(private apiController: ApiController) {
     // 默认MOCK缓存模式
     this.proxyHandler = this.mockCacheHandler
