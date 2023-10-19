@@ -1,6 +1,6 @@
 import type { Command, TreeItemCollapsibleState } from 'vscode'
 import { TreeItem } from 'vscode'
-import dayjs from 'dayjs'
+import { formatDate } from '../utils'
 import type ApiItem from '../core/ApiItem'
 
 export default class AmsApiItem extends TreeItem {
@@ -23,7 +23,7 @@ export default class AmsApiItem extends TreeItem {
     const { uid, up_time } = this.api
 
     if (uid && up_time)
-      return `${uid} - ${dayjs(up_time).format('YYYY-MM-DD')}`
+      return `${uid} - ${formatDate(up_time)}`
 
     return ''
   }

@@ -1,8 +1,7 @@
 import type { Event, ProviderResult, TreeDataProvider, TreeItem } from 'vscode'
 import { EventEmitter, TreeItemCollapsibleState, window } from 'vscode'
-import dayjs from 'dayjs'
 import { appSysConfig } from '../core/AppSysConfig'
-import { warn } from '../utils'
+import { formatDate, warn } from '../utils'
 import type AmsApiItem from './AmsApiItem'
 import AmsItem from './AmsItem'
 
@@ -47,7 +46,7 @@ export default class AmsProvider implements TreeDataProvider<ProviderItemType> {
 
     const leftEle = new AmsItem('请求方式', method, TreeItemCollapsibleState.None)
     const middleEle = new AmsItem('路径', path, TreeItemCollapsibleState.None)
-    const rightEle = new AmsItem('更新时间', dayjs(up_time).format('YYYY-MM-DD'), TreeItemCollapsibleState.None)
+    const rightEle = new AmsItem('更新时间', formatDate(up_time), TreeItemCollapsibleState.None)
 
     return [
       leftEle,

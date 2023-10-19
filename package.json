@@ -194,7 +194,6 @@
     "vitest": "^0.31.4"
   },
   "dependencies": {
-    "dayjs": "^1.11.10",
     "request-promise-native": "^1.0.9"
   }
 }
