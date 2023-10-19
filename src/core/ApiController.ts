@@ -74,7 +74,7 @@ export default class ApiController {
                 json: body,
               }
               // 创建本地Json文件
-              this.apiCreator.setApiItem(apiNode)
+              this.apiCreator.setApiItem(apiNode).createJsonFile()
 
               resolve(true)
             }
@@ -85,7 +85,7 @@ export default class ApiController {
                 json: { success: true, code: '000000', desc: '成功' },
               }
 
-              this.apiCreator.setApiItem(apiNode)
+              this.apiCreator.setApiItem(apiNode).createJsonFile()
 
               window.showErrorMessage(
                 `${title} 接口为空或不符合JSON格式规范，请联系服务端修复后重试`,

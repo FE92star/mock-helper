@@ -2,6 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { Uri, window } from 'vscode'
 import { MOCK_CONFIG_NAME, pathAdapters } from '../adapters'
+import { readJsonFile, writeJsonFile } from '../utils'
 import type ApiItem from './ApiItem'
 import { appSysConfig } from './AppSysConfig'
 
@@ -29,48 +30,60 @@ export default class ApiCreator {
   }
 
   /**
-   * json写入信息
+   * mock文件夹的目录地址
   */
-  private writeJsonFile(file: string, json: any) {
-    try {
-      fs.writeFileSync(file, JSON.stringify(json, null, 2), {
-        encoding: 'utf-8',
-      })
-    }
-    catch (error) {
-      window.showErrorMessage(`写入 ${file} 文件失败，请检查`)
-    }
-  }
-
-  /**
-   * 读取json信息
-  */
-  private readJsonFile(file: string) {
-    try {
-      return fs.readFileSync(file, { encoding: 'utf-8' })
-    }
-    catch (error) {
-      window.showErrorMessage(`读取 ${file} 文件失败，请检查`)
-    }
+  get mockJsonDir() {
+    return appSysConfig.getConfiguration(MOCK_CONFIG_NAME.rootDir)
   }
 
   /**
    * 更新json信息
   */
-  private updateJsonFile() {
+  private async updateJsonFile() {
     if (!this.apiItem)
       return
 
     const apiJsonPath = this.getApiJsonPath()
     if (!fs.existsSync(apiJsonPath))
       return
-    const oldJsonBodyStr = this.readJsonFile(apiJsonPath)
+    const oldJsonBodyStr = await readJsonFile(apiJsonPath).catch((e) => {
+      window.showErrorMessage(`读取 ${e} 文件失败，请检查`)
+    })
     const oldJsonBody = oldJsonBodyStr ? JSON.parse(oldJsonBodyStr) : {}
 
     // TODO: 需要处理Json字段合并的问题
     const jsonBody = Object.assign(oldJsonBody, this.apiItem.json)
 
-    this.writeJsonFile(apiJsonPath, jsonBody)
+    writeJsonFile(apiJsonPath, jsonBody)
+  }
+
+  /**
+   * 创建本地mock json文件
+  */
+  public createJsonFile() {
+    if (!this.apiItem)
+      return
+
+    // 不存在则创建
+    if (!fs.existsSync(this.mockJsonDir))
+      fs.mkdirSync(this.mockJsonDir)
+
+    let apiUrl = this.apiItem.path
+    if (!apiUrl.startsWith('/'))
+      apiUrl = `/${apiUrl}`
+
+    // api所在的目录
+    const apiDir = pathAdapters(this.mockJsonDir + path.dirname(apiUrl))
+
+    if (!fs.existsSync(apiDir))
+      fs.mkdirSync(apiDir, { recursive: true })
+
+    const apiPath = this.getApiJsonPath()
+    // 文件存在则更新、否则创建再写入
+    if (fs.existsSync(apiPath))
+      this.updateJsonFile()
+    else
+      writeJsonFile(apiPath, this.apiItem.json)
   }
 
   getApiJsonPath() {
@@ -78,14 +91,11 @@ export default class ApiCreator {
       throw new Error('请先设置URL')
 
     const { path: apiPath } = this.apiItem
-
-    // mock文件夹的目录地址
-    const mockJsonDir = appSysConfig.getConfiguration(MOCK_CONFIG_NAME.rootDir)
-    // 适配windows系统
+    // 兼容windows系统
     const lastApiPath = apiPath.startsWith('/') ? `/${apiPath}` : apiPath
 
     const apiProjectPath = pathAdapters(
-      path.join(mockJsonDir, `${lastApiPath}.json`),
+      path.join(this.mockJsonDir, `${lastApiPath}.json`),
     )
 
     return apiProjectPath
