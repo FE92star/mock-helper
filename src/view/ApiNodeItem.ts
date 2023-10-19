@@ -3,7 +3,10 @@ import { TreeItem } from 'vscode'
 import { formatDate } from '../utils'
 import type ApiItem from '../core/ApiItem'
 
-export default class AmsApiItem extends TreeItem {
+/**
+ * api节点视图
+*/
+export default class ApiNodeItem extends TreeItem {
   constructor(
     public api: ApiItem,
     public readonly collapsibleState: TreeItemCollapsibleState,

@@ -2,10 +2,10 @@ import type { Event, ProviderResult, TreeDataProvider, TreeItem } from 'vscode'
 import { EventEmitter, TreeItemCollapsibleState, window } from 'vscode'
 import { appSysConfig } from '../core/AppSysConfig'
 import { formatDate, warn } from '../utils'
-import type AmsApiItem from './AmsApiItem'
-import AmsItem from './AmsItem'
+import type ApiNodeItem from './ApiNodeItem'
+import NodeItem from './NodeItem'
 
-type ProviderItemType = AmsApiItem | AmsItem
+type ProviderItemType = ApiNodeItem | NodeItem
 
 export default class AmsProvider implements TreeDataProvider<ProviderItemType> {
   private _onDidChangeTreeData: EventEmitter<ProviderItemType | undefined> = new EventEmitter<
@@ -38,15 +38,15 @@ export default class AmsProvider implements TreeDataProvider<ProviderItemType> {
     }
   }
 
-  private getAmsChildren(el: ProviderItemType): AmsItem[] {
-    if (el instanceof AmsItem)
+  private getAmsChildren(el: ProviderItemType): NodeItem[] {
+    if (el instanceof NodeItem)
       return []
 
     const { method, path, up_time } = el.api
 
-    const leftEle = new AmsItem('请求方式', method, TreeItemCollapsibleState.None)
-    const middleEle = new AmsItem('路径', path, TreeItemCollapsibleState.None)
-    const rightEle = new AmsItem('更新时间', formatDate(up_time), TreeItemCollapsibleState.None)
+    const leftEle = new NodeItem('请求方式', method, TreeItemCollapsibleState.None)
+    const middleEle = new NodeItem('路径', path, TreeItemCollapsibleState.None)
+    const rightEle = new NodeItem('更新时间', formatDate(up_time), TreeItemCollapsibleState.None)
 
     return [
       leftEle,
