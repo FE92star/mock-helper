@@ -161,6 +161,11 @@
           "type": "boolean",
           "default": false,
           "description": "是否在应用启动时启用 mock"
+        },
+        "mockHelper.configPath": {
+          "type": "string",
+            "default": "${workspaceFolder}/mock.config.json",
+            "description": "mock插件 的配置文件，可以是 require 能解析的任何文件格式"
         }
       }
     }
@@ -179,6 +184,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
     "@antfu/ni": "^0.21.3",
+    "@types/http-proxy": "^1.17.13",
     "@types/node": "^18.16.16",
     "@types/request-promise-native": "^1.0.19",
     "@types/vscode": "^1.78.1",

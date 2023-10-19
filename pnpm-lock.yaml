@@ -27,6 +27,9 @@ importers:
       '@antfu/ni':
         specifier: ^0.21.3
         version: 0.21.3
+      '@types/http-proxy':
+        specifier: ^1.17.13
+        version: 1.17.13
       '@types/node':
         specifier: ^18.16.16
         version: 18.16.16
@@ -533,6 +536,12 @@ packages:
 
   /@types/chai@4.3.5:
     resolution: {integrity: sha512-mEo1sAde+UCE6b2hxn332f1g1E8WfYRu6p5SvTKr2ZKC1f7gFJXk4h5PyGP9Dt6gCaG8y8XhwnXWC6Iy2cmBng==}
+    dev: true
+
+  /@types/http-proxy@1.17.13:
+    resolution: {integrity: sha512-GkhdWcMNiR5QSQRYnJ+/oXzu0+7JJEPC8vkWXK351BkhjraZF+1W13CUYARUvX9+NqIU2n6YHA4iwywsc/M6Sw==}
+    dependencies:
+      '@types/node': 18.16.16
     dev: true
 
   /@types/json-schema@7.0.9:

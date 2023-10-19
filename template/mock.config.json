@@ -1,6 +1,6 @@
 {
   "baseUrl": "https://yapi.example.com",
-  "apiMap": [
+  "apiMaps": [
     {
       "projectId": 1,
       "apiPrefix": "/example1",
@@ -20,7 +20,16 @@
       },
       {
           "name": "测试环境",
-          "target": "https://test.example.com"
+          "target": [
+            {
+              "match": "*",
+              "target": "https://test.example1.com"
+            },
+            {
+              "match": "/a/b/*",
+              "target": "https://test.example2.com"
+            }
+          ]
       },
       {
         "name": "生产环境",

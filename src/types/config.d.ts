@@ -12,19 +12,26 @@ declare namespace Yapi {
     interface Target{
       /** 代理环境名称 */
       name: string
-      /** 代理环境地址 */
-      target: string
+      /** 代理环境地址 | 同一个环境代理多个域名 */
+      target: string | {
+        /** 匹配规则 */
+        match: string
+        /** 代理环境地址 */
+        target: string
+      }[]
+      /** 是否为默认代理环境 */
+      default?: boolean | 0 | 1
     }
 
     interface Json {
       /** 服务信息映射数组 */
-      apiMap?: ApiMapItem[]
+      apiMaps?: ApiMapItem[]
       /** Yapi服务地址 */
       baseUrl: string
       /** 代理地址数组 */
       proxy:{
-        targets:Target[]
-        port?:string
+        targets: Target[]
+        port: number
       }
     }
   }

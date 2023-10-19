@@ -9,7 +9,7 @@ import type { MockOptions } from '../services/types'
 import { appSysConfig } from './AppSysConfig'
 
 /**
- * 插件用户配置相关(yapi-mock.config.json)
+ * 插件用户配置相关(mock.config.json)
 */
 export default class AppUserConfig {
   config: Yapi.Config.Json = this.getAppConfig()
@@ -49,7 +49,7 @@ export default class AppUserConfig {
   }
 
   private createConfigFile(path: string) {
-    const configData = require('../../template/yapi-mock.config.json')
+    const configData = require('../../template/mock.config.json')
 
     // 写入默认配置文件
     fs.writeFileSync(path, JSON.stringify(configData), { encoding: 'utf-8' })
@@ -60,7 +60,7 @@ export default class AppUserConfig {
   */
   private validateAppConfig(configJson: Yapi.Config.Json) {
     if (!configJson)
-      throw new Error(`${warn('启动本插件前请先在项目根目录下创建yapi-mock.config.json')}`)
+      throw new Error(`${warn('启动本插件前请先在项目根目录下创建mock.config.json')}`)
 
     const isEmptyKey = Object.values(configJson).some(v => !v)
     if (isEmptyKey)
@@ -81,7 +81,7 @@ export default class AppUserConfig {
    * 获取apiMap字段
   */
   get getAppApiMap() {
-    return this.config.apiMap || []
+    return this.config.apiMaps || []
   }
 
   /**
