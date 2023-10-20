@@ -64,7 +64,7 @@ export default class ApiController {
             const { api: { path, method, title } } = node
 
             try {
-              const body = await amsServer.getMockDataList({
+              const body = await amsServer.getMockData({
                 path,
                 method,
               })
