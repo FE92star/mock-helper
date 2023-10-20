@@ -7,4 +7,5 @@ export const MOCK_CONFIG_NAME = {
   rootDir: 'mock.rootDir',
   port: 'mock.port',
   autoRun: 'mock.autoRun',
+  apiPrefixs: 'mock.apiPrefixs',
 }

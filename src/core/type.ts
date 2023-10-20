@@ -14,6 +14,18 @@ export const MOCK_ACTION_TYPE_NAME = {
 }
 
 /**
+ * 响应状态码
+*/
+export enum STATUS_CODE {
+  /** 成功 */
+  OK = 200,
+  /** 未找到 */
+  NOT_FOUND = 404,
+  /** 服务器出错 */
+  SERVER_ERROR = 500,
+}
+
+/**
  * 同一个开发环境多目标地址匹配
 */
 export type MultipleTarget = {

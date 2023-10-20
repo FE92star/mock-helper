@@ -52,7 +52,7 @@ export default class ApiController {
   /**
    * 同步对应的api信息
   */
-  fetchTargetApiInfo(node: AmsApiItem) {
+  fetchTargetApiInfo(node: AmsApiItem, mockUrl = '') {
     const msg = 'Sync: 同步云端接口信息中...'
 
     return new Promise((resolve, reject) => {
@@ -70,7 +70,7 @@ export default class ApiController {
               })
               const apiNode = {
                 ...node.api,
-                path,
+                path: mockUrl || path,
                 json: body,
               }
               // 创建本地Json文件
@@ -81,7 +81,7 @@ export default class ApiController {
             catch (error) {
               const apiNode = {
                 ...node.api,
-                path,
+                path: mockUrl || path,
                 json: { success: true, code: '000000', desc: '成功' },
               }
 
