@@ -36,9 +36,10 @@ export default class AppUserConfig {
       this.createConfigFile(configPath)
 
     try {
+      // 删除require的缓存
       if (require.cache[configPath])
         delete require.cache[configPath]
-
+      // require读取js配置文件
       const appConfig = require(configPath)
       return appConfig
     }
