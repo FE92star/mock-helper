@@ -5,36 +5,16 @@ import url from 'node:url'
 import bodyParser from 'body-parser'
 import httpProxy from 'http-proxy'
 import queryString from 'query-string'
-import type { StatusBarItem } from 'vscode'
-import { StatusBarAlignment, TreeItemCollapsibleState, window } from 'vscode'
+import { StatusBarAlignment, type StatusBarItem, TreeItemCollapsibleState, window } from 'vscode'
 import { type Key, pathToRegexp } from 'path-to-regexp'
-import { MOCK_CONFIG_NAME, pathAdapters, urlAdapters } from '../adapters'
+import { MOCK_CONFIG_NAME, pathAdapters, urlAdapters, yapiMockDataAdapters } from '../adapters'
 import { amsServer } from '../services/AmsServer'
 import ApiNodeItem from '../view/ApiNodeItem'
 import type ApiController from './ApiController'
-import { MOCK_ACTION_TYPE, MOCK_ACTION_TYPE_NAME, STATUS_CODE } from './type'
+import { BASIC_MOCK_PICK_OPTIONS, MOCK_ACTION_TYPE, MOCK_ACTION_TYPE_DESC, MOCK_ACTION_TYPE_NAME, STATUS_CODE } from './type'
 import { appSysConfig } from './AppSysConfig'
-
-// 默http认代理配置
-const DEFAULT_PROXY_OPTION: httpProxy.ServerOptions = {
-  changeOrigin: true,
-}
-// 请求头json设置
-const REQUEST_HEADER_OPTION: http.OutgoingHttpHeaders = {
-  'Content-Type': 'application/json',
-}
-
-// 设置允许跨域
-function allowCorsOrigin(proxyRes: any, req: http.IncomingMessage) {
-  const origin = req.headers.origin || req.headers.host
-  proxyRes.headers['Access-Control-Allow-Credentials'] = true
-  proxyRes.headers['Access-Control-Allow-Headers']
-    = 'Content-Type, x-requested-with, Origin, X-Requested-With, Content-Type, Accept, Cookie, tku'
-  proxyRes.headers['Access-Control-Allow-Methods']
-    = 'POST, GET, PUT, OPTIONS, DELETE, PATCH'
-  proxyRes.headers['Access-Control-Allow-Origin'] = origin || '*'
-  proxyRes.headers['Access-Control-Max-Age'] = 3600
-}
+import { appUserConfig } from './AppUserConfig'
+import { DEFAULT_PROXY_OPTION, REQUEST_HEADER_OPTION, allowCorsOrigin } from './httpConfig'
 
 /**
  * 运行api服务
@@ -75,6 +55,8 @@ export default class ApiServer {
       return defaultProxyInfo
 
     // 开启代理服务
+    this.setupProxy(defaultProxy)
+
     return defaultProxy
   }
 
@@ -82,21 +64,64 @@ export default class ApiServer {
    * 启动proxy server
   */
   public async runProxyServer() {
-    // const mockPort = appSysConfig.getConfiguration(MOCK_CONFIG_NAME.port)
+    const mockPort = appSysConfig.getConfiguration(MOCK_CONFIG_NAME.port)
+    const configPath = appSysConfig.getConfiguration(appSysConfig.properties.configPath)
 
-    // 1
-    this.proxyHandler = () => null
-    this.server = http.createServer(this.serverProxyHandler)
+    // 默认MOCK缓存模式
+    this.proxyHandler = this.mockCacheHandler
+    try {
+      this.server = http.createServer(this.serverProxyHandler)
+
+      let _mockPort = mockPort
+      let _defaultProxyInfo = { name: MOCK_ACTION_TYPE_NAME[MOCK_ACTION_TYPE.MOCK] }
+      // port以userConfig(mock.config.json)为主
+      if (fs.existsSync(configPath)) {
+        _mockPort = appUserConfig.config.proxy.port
+        _defaultProxyInfo = this.initDefaultProxy(appUserConfig.config)
+      }
+
+      const serverSuccess = this.server.listen(_mockPort)
+      if (serverSuccess.listening) {
+      // 启动成功
+        return Promise.resolve({ port: _mockPort, defaultProxyInfo: _defaultProxyInfo })
+      }
+      else {
+        return Promise.reject(new Error('服务启动失败'))
+      }
+    }
+    catch (error) {
+      return Promise.reject(error)
+    }
   }
 
   /**
-   * 基于proxyHandler做一层包装
+   * 停止proxy server
+  */
+  public stopProxyServer() {
+    return new Promise((resolve, reject) => {
+      // 服务未启动return
+      if (!this.server)
+        return resolve(true)
+
+      this.server.close((err) => {
+        if (err)
+          reject(err)
+
+        // 删除httpServer实例
+        this.server = undefined
+        resolve(true)
+      })
+    })
+  }
+
+  /**
+   * 基于proxyHandler做一层包装，处理切换的问题
   */
   serverProxyHandler(req: http.IncomingMessage, res: http.ServerResponse) {
     this.proxyHandler(req, res)
   }
 
-  private toJSON(o: any) {
+  private toStringify(o: any) {
     return JSON.stringify(o, null, 2)
   }
 
@@ -130,9 +155,46 @@ export default class ApiServer {
   private rewriteResponse(res: http.ServerResponse) {
     (res as any).json = (json: any) => {
       res.writeHead(STATUS_CODE.OK, REQUEST_HEADER_OPTION)
-      return res.end(this.toJSON(json))
+      return res.end(this.toStringify(json))
     }
     return res
+  }
+
+  /**
+   * 直连YAPI的MOCK数据模式代理逻辑
+  */
+  async yapiMockHandler(req: http.IncomingMessage, res: http.ServerResponse) {
+    const { url, method = 'GET' } = req
+    const reqApi = url?.split('?')[0] || ''
+
+    if (!reqApi) {
+      res.writeHead(STATUS_CODE.NOT_FOUND, REQUEST_HEADER_OPTION)
+      return res.end(
+        this.toStringify({
+          code: 999999,
+          success: false,
+          data: null,
+          desc: 'YAPI平台未部署，请联系服务端',
+        }),
+      )
+    }
+
+    // 从yapi平台mock地址拉取数据
+    try {
+      const yapiMockData = await amsServer.getMockData({ path: reqApi, method })
+      return res.end(yapiMockDataAdapters(yapiMockData))
+    }
+    catch (error) {
+      res.writeHead(STATUS_CODE.SERVER_ERROR, REQUEST_HEADER_OPTION)
+      return res.end(
+        this.toStringify({
+          code: 999999,
+          success: false,
+          data: null,
+          desc: '获取YAPI平台mock数据失败，请稍后重试或联系服务端',
+        }),
+      )
+    }
   }
 
   /**
@@ -148,11 +210,11 @@ export default class ApiServer {
       res.writeHead(STATUS_CODE.SERVER_ERROR, REQUEST_HEADER_OPTION)
 
       return res.end(
-        this.toJSON({
+        this.toStringify({
           code: 999999,
           success: false,
           data: null,
-          msg: '等待初始化完成',
+          desc: '等待初始化完成',
         }))
     }
 
@@ -166,11 +228,11 @@ export default class ApiServer {
       res.writeHead(STATUS_CODE.SERVER_ERROR, REQUEST_HEADER_OPTION)
 
       return res.end(
-        this.toJSON({
+        this.toStringify({
           code: 999998,
           success: false,
           data: null,
-          msg: '不支持该请求',
+          desc: '不支持该请求',
         }),
       )
     }
@@ -181,7 +243,7 @@ export default class ApiServer {
 
     const isLocalJsonExist = fs.existsSync(jsonApiPath)
     const isLocalJsExist = fs.existsSync(jsApiPath)
-    // path是否未url参数
+    // path是否为url参数
     let isUrlParams = false
 
     // 在远端平台上对应的api
@@ -251,13 +313,109 @@ export default class ApiServer {
       // c3. 抛错404不存在
       res.writeHead(STATUS_CODE.NOT_FOUND, REQUEST_HEADER_OPTION)
       return res.end(
-        this.toJSON({
+        this.toStringify({
           code: 999998,
           success: false,
           data: null,
         }),
       )
     }
+  }
+
+  /**
+   * 用户配置的proxy.targets
+  */
+  get configTargets() {
+    const originTargets = appUserConfig.config.proxy.targets || []
+
+    return originTargets.map((v) => {
+      let targetConfig
+      // 多源代理模式的targets
+      let mutipleProxyTargets: any[] = []
+      const { name, target } = v
+
+      if (!Array.isArray(target)) {
+        targetConfig = this.mergeProxyOptions(target)
+      }
+      else {
+        const globMatchTarget = target.find(w => w.match === '*')
+        targetConfig = this.mergeProxyOptions(globMatchTarget?.target || '')
+        mutipleProxyTargets = target
+      }
+
+      return {
+        ...targetConfig,
+        name,
+        mutipleProxyTargets,
+      }
+    })
+  }
+
+  public async switchProxy() {
+    const userConfigTarget = this.configTargets.map((conf) => {
+      const isMultipleProxy = conf.mutipleProxyTargets.length
+
+      return {
+        label: this.getNameFromProxyOption(conf),
+        description: isMultipleProxy ? MOCK_ACTION_TYPE_DESC.mutipleProxy : conf.target as string,
+        target: isMultipleProxy ? conf.mutipleProxyTargets : conf.target as string,
+      }
+    })
+
+    const userTarget = await window.showQuickPick(
+      [
+        ...BASIC_MOCK_PICK_OPTIONS,
+        ...userConfigTarget,
+      ],
+      { placeHolder: '请选择代理目标' },
+    )
+
+    if (!userTarget?.target)
+      return
+
+    const coreTarget = userTarget.target as MOCK_ACTION_TYPE
+
+    switch (coreTarget) {
+      // 1. 自定义配置模式
+      case MOCK_ACTION_TYPE.CUSTOM: {
+        const inputValue = await window.showInputBox({
+          placeHolder: '例如：http://192.186.0.1:10086',
+        })
+
+        if (!inputValue)
+          return
+
+        this.setupProxy(inputValue)
+
+        break
+      }
+      // 2. mock缓存模式
+      case MOCK_ACTION_TYPE.MOCK: {
+        this.setupMockCacheProxy()
+
+        break
+      }
+      // 3. yapi直连模式
+      case MOCK_ACTION_TYPE.YAPI_MOCK: {
+        this.setupYapiMockProxy()
+
+        break
+      }
+      // 4. 默认切换环境
+      default:
+        this.setupProxy(coreTarget)
+        break
+    }
+  }
+
+  setupMockCacheProxy() {
+    this.proxyHandler = this.mockCacheHandler
+    this.updateStatusBar(MOCK_ACTION_TYPE_NAME[MOCK_ACTION_TYPE.MOCK])
+  }
+
+  setupYapiMockProxy() {
+    this.proxyHandler = this.yapiMockHandler
+    this.updateStatusBar(MOCK_ACTION_TYPE_NAME[MOCK_ACTION_TYPE.YAPI_MOCK])
   }
 
   /**
@@ -277,7 +435,7 @@ export default class ApiServer {
 
     this.proxyHandler = (req, res) => {
       if (typeof value === 'object' && Array.isArray(value.target)) {
-        // 处理多源代理逻辑
+        // 处理多源代理模式逻辑
         const globItem = value.target.find(v => v.match === '*') || { target: '' }
 
         const matchItem = value.target.find((v) => {

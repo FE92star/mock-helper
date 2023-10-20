@@ -31,6 +31,7 @@ declare namespace Yapi {
       /** 代理地址数组 */
       proxy:{
         targets: Target[]
+        /** 端口号 */
         port: number
       }
     }

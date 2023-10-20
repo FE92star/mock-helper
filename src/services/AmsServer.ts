@@ -39,7 +39,7 @@ export class AmsServer {
     this.amsApiList = apiList
   }
 
-  async getMockDataList(opt: MockOptions) {
+  async getMockData(opt: MockOptions) {
     const resData = await appUserConfig.requestMockData(opt)
 
     return resData

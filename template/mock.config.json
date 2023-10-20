@@ -15,21 +15,21 @@
   "proxy": {
     "targets":[
       {
-          "name": "开发环境",
-          "target": "https://dev.example.com"
+        "name": "开发环境",
+        "target": "https://dev.example.com"
       },
       {
-          "name": "测试环境",
-          "target": [
-            {
-              "match": "*",
-              "target": "https://test.example1.com"
-            },
-            {
-              "match": "/a/b/*",
-              "target": "https://test.example2.com"
-            }
-          ]
+        "name": "测试环境",
+        "target": [
+          {
+            "match": "*",
+            "target": "https://test.example1.com"
+          },
+          {
+            "match": "/a/b/*",
+            "target": "https://test.example2.com"
+          }
+        ]
       },
       {
         "name": "生产环境",

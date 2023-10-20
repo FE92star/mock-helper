@@ -26,4 +26,12 @@ export function urlAdapters(url: string) {
   return newUrl
 }
 
+export function yapiMockDataAdapters(data: any) {
+  return JSON.stringify({
+    code: data.code || '000000',
+    success: data.success === null ? false : data.success,
+    data: data.data,
+  }, null, 2)
+}
+
 export * from './config'

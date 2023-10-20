@@ -3,15 +3,40 @@ export enum MOCK_ACTION_TYPE {
   CUSTOM,
   /** MOCK缓存模式 */
   MOCK,
-  /** 混合Mock模式 */
-  MIXED_MOCK,
+  /** 直连YAPI的MOCK数据模式 */
+  YAPI_MOCK,
 }
 
 export const MOCK_ACTION_TYPE_NAME = {
   [MOCK_ACTION_TYPE.CUSTOM]: '自定义代理地址',
   [MOCK_ACTION_TYPE.MOCK]: 'MOCK缓存模式',
-  [MOCK_ACTION_TYPE.MIXED_MOCK]: '混合Mock模式',
+  [MOCK_ACTION_TYPE.YAPI_MOCK]: '直连YAPI的MOCK数据模式',
 }
+
+export const MOCK_ACTION_TYPE_DESC = {
+  [MOCK_ACTION_TYPE.CUSTOM]: '使用自定义的服务IP地址',
+  [MOCK_ACTION_TYPE.MOCK]: '直接代理到项目的本地mock/*文件地址',
+  [MOCK_ACTION_TYPE.YAPI_MOCK]: '直接代理到YAPI平台的mock数据地址',
+  mutipleProxy: '多源代理模式',
+}
+
+export const BASIC_MOCK_PICK_OPTIONS = [
+  {
+    label: MOCK_ACTION_TYPE_NAME[MOCK_ACTION_TYPE.CUSTOM],
+    description: MOCK_ACTION_TYPE_DESC[MOCK_ACTION_TYPE.CUSTOM],
+    target: MOCK_ACTION_TYPE.CUSTOM,
+  },
+  {
+    label: MOCK_ACTION_TYPE_NAME[MOCK_ACTION_TYPE.MOCK],
+    description: MOCK_ACTION_TYPE_DESC[MOCK_ACTION_TYPE.MOCK],
+    target: MOCK_ACTION_TYPE.MOCK,
+  },
+  {
+    label: MOCK_ACTION_TYPE_NAME[MOCK_ACTION_TYPE.YAPI_MOCK],
+    description: MOCK_ACTION_TYPE_DESC[MOCK_ACTION_TYPE.YAPI_MOCK],
+    target: MOCK_ACTION_TYPE.YAPI_MOCK,
+  },
+]
 
 /**
  * 响应状态码
