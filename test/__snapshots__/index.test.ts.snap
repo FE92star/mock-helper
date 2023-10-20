@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`query > string 1`] = `
+[
+  {
+    "modifier": "",
+    "name": "bar",
+    "pattern": "[^\\\\/#\\\\?]+?",
+    "prefix": "/",
+    "suffix": "",
+  },
+]
+`;
+
+exports[`query > string 2`] = `/\\^\\\\/foo\\(\\?:\\\\/\\(\\[\\^\\\\/#\\\\\\?\\]\\+\\?\\)\\)\\[\\\\/#\\\\\\?\\]\\?\\$/i`;
