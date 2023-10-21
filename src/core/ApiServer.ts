@@ -352,8 +352,8 @@ export default class ApiServer {
     })
   }
 
-  public async switchProxy() {
-    const userConfigTarget = this.configTargets.map((conf) => {
+  get userConfigTarget() {
+    return this.configTargets.map((conf) => {
       const isMultipleProxy = conf.mutipleProxyTargets.length
 
       return {
@@ -362,11 +362,13 @@ export default class ApiServer {
         target: isMultipleProxy ? conf.mutipleProxyTargets : conf.target as string,
       }
     })
+  }
 
+  public async switchProxy() {
     const userTarget = await window.showQuickPick(
       [
         ...BASIC_MOCK_PICK_OPTIONS,
-        ...userConfigTarget,
+        ...this.userConfigTarget,
       ],
       { placeHolder: '请选择代理目标' },
     )
@@ -402,9 +404,9 @@ export default class ApiServer {
 
         break
       }
-      // 4. 默认切换环境
+      // 4. 默认用户配置环境
       default:
-        this.setupProxy(coreTarget)
+        this.setupProxy(coreTarget, true)
         break
     }
   }
@@ -420,13 +422,13 @@ export default class ApiServer {
   }
 
   /**
-   * 自定义代理地址模式/代理环境选择模式(域名代理)
+   * 自定义代理地址模式/用户配置环境选择模式(域名代理)
    * 创建代理服务器，参数value可传几种类型
    * 1. 自定义域名/ip字符串 http://195.88.66
    * 2. httpProxy.ServerOptions
    * 3. 配置文件的proxy.target
   */
-  setupProxy(value: string | httpProxy.ServerOptions | Yapi.Config.Target) {
+  setupProxy(value: string | httpProxy.ServerOptions | Yapi.Config.Target, isUserTarget = false) {
     const proxyServer = httpProxy.createProxyServer()
     // 监听代理错误事件
     proxyServer.on('error', (e) => {
@@ -455,10 +457,14 @@ export default class ApiServer {
       }
     }
 
-    if (typeof value === 'string')
-      this.updateStatusBar(value)
-    else
+    if (typeof value === 'string') {
+      const userTargetName = this.userConfigTarget.find(config => config.target === value)?.label || value
+      const newValue = isUserTarget ? userTargetName : value
+      this.updateStatusBar(newValue)
+    }
+    else {
       this.updateStatusBar(this.getNameFromProxyOption(value))
+    }
   }
 
   /**
