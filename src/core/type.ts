@@ -1,6 +1,6 @@
 export enum MOCK_ACTION_TYPE {
   /** 自定义代理地址 */
-  CUSTOM,
+  CUSTOM = 1,
   /** MOCK缓存模式 */
   MOCK,
   /** 直连YAPI的MOCK数据模式 */
@@ -10,7 +10,7 @@ export enum MOCK_ACTION_TYPE {
 export const MOCK_ACTION_TYPE_NAME = {
   [MOCK_ACTION_TYPE.CUSTOM]: '自定义代理地址',
   [MOCK_ACTION_TYPE.MOCK]: 'MOCK缓存模式',
-  [MOCK_ACTION_TYPE.YAPI_MOCK]: '直连YAPI的MOCK数据模式',
+  [MOCK_ACTION_TYPE.YAPI_MOCK]: '直连YAPI模式',
 }
 
 export const MOCK_ACTION_TYPE_DESC = {
