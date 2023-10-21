@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import fs from 'node:fs'
-import * as rp from 'request-promise-native'
-import { winError } from '../utils'
+import axios from 'axios'
+import { winConsole, winError } from '../utils'
 import { YAPI_LIMIT_DATA, YAPI_OEPNAPI_BASEURL, YAPI_OEPNAPI_LIST_MAP } from '../services/YapiOpenApi'
 import type { MockOptions } from '../services/types'
 import { appSysConfig } from './AppSysConfig'
@@ -12,17 +12,18 @@ import { appSysConfig } from './AppSysConfig'
 */
 export default class AppUserConfig {
   config: Yapi.Config.Json = this.getAppConfig()
-  /** request-promise实例 */
-  rpIns = this.createRpIns()
+  /** axios实例 */
+  axiosIns = this.createAxiosIns()
 
   constructor() {
+    winConsole(`${this} ==> this`)
     this.config = this.getAppConfig()
   }
 
-  private createRpIns() {
-    return rp.defaults({
-      baseUrl: this.config.baseUrl,
-      json: true,
+  private createAxiosIns() {
+    return axios.create({
+      baseURL: this.config.baseUrl,
+      timeout: 3000,
     })
   }
 
@@ -112,10 +113,11 @@ export default class AppUserConfig {
   }
 
   /** 获取项目下所有的api */
-  requestProjectApi({ token }: Yapi.Config.ApiMapItem) {
+  public requestProjectApi({ token }: Yapi.Config.ApiMapItem) {
+    winConsole(`${this}`)
     const apiUrl = YAPI_OEPNAPI_LIST_MAP.apiList.url
 
-    return this.rpIns({
+    return this.axiosIns({
       url: `${YAPI_OEPNAPI_BASEURL}${apiUrl}?token=${token}&limit=${YAPI_LIMIT_DATA}`,
     })
   }
@@ -124,7 +126,7 @@ export default class AppUserConfig {
   requestCatMenu({ token }: Yapi.Config.ApiMapItem) {
     const apiUrl = YAPI_OEPNAPI_BASEURL + YAPI_OEPNAPI_LIST_MAP.catMenu.url
 
-    return this.rpIns({
+    return this.axiosIns({
       url: `${apiUrl}?token=${token}`,
     })
   }
@@ -155,7 +157,7 @@ export default class AppUserConfig {
 
     const { token } = apiConfig
 
-    return this.rpIns({
+    return this.axiosIns({
       url: `${apiUrl}?token=${token}&id=${_id}`,
     })
   }
@@ -173,18 +175,18 @@ export default class AppUserConfig {
       return
     }
 
-    return this.rpIns({
-      baseUrl: `${baseUrl}/mock/${apiConfig.projectId}`,
-      uri: path,
+    return this.axiosIns({
+      baseURL: `${baseUrl}/mock/${apiConfig.projectId}`,
+      url: path,
       method: method.toLocaleUpperCase(),
     })
   }
 
-  private requestApiList(request: (item: Yapi.Config.ApiMapItem) => rp.RequestPromise<any>) {
+  private requestApiList(request: (item: Yapi.Config.ApiMapItem) => Promise<any>) {
     const apiMapData = this.getAppApiMap
 
     if (!apiMapData.length)
-      return Promise.reject(new Error('同步失败'))
+      return Promise.reject(new Error('api数据同步失败'))
 
     return Promise.all(apiMapData.map(item => request(item)))
   }

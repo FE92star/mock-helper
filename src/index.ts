@@ -3,7 +3,7 @@ import { apiWebview } from './view/ApiWebview'
 import ApiCreator from './core/ApiCreator'
 import ApiController from './core/ApiController'
 import ApiProvider from './view/ApiProvider'
-import { COMMAND_ID_IDENTIFIERS, GLOBAL_APP_IDENTIFIER } from './adapters'
+import { APP_NAME_PREFIX, COMMAND_ID_IDENTIFIERS, GLOBAL_APP_IDENTIFIER } from './adapters'
 import ApiServer from './core/ApiServer'
 import ApiCommand from './core/ApiCommand'
 import { appSysConfig } from './core/AppSysConfig'
@@ -27,13 +27,14 @@ function getAppCommandsMap(apiCommand: ApiCommand) {
 
 export function activate(ctx: ExtensionContext) {
   // eslint-disable-next-line no-console
-  console.log('插件启动中...')
+  console.log(`${APP_NAME_PREFIX}插件启动中...`)
 
   apiWebview.setContext(ctx)
 
   // 初始化同步api数据
   const apiCreator = new ApiCreator()
   const apiController = new ApiController(apiCreator)
+  // TODO-目前同步信息流程卡在这里，需要调试看一下问题
   apiController.fetchServerApiData()
 
   // 创建视图
@@ -49,6 +50,7 @@ export function activate(ctx: ExtensionContext) {
   for (const [name, cb] of Object.entries(appCommandsMap))
     registerTargetCommand(appSysConfig.identifierWithDot(name), cb)
 
+  // TODO-调试过程中可以先注释这个逻辑
   if (!apiController.apiItems.length)
     apiCommand.refreshServer()
 }

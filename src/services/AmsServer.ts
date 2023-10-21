@@ -49,7 +49,9 @@ export class AmsServer {
   async getApiInfo(apiItem: Yapi.Api.AllApi.Res) {
     const resData = await appUserConfig.requestTargetApi(apiItem)
 
-    const apiResult = apiAdapters(resData)
+    const apiResult = apiAdapters({
+      res_body: resData,
+    })
     return apiResult
   }
 

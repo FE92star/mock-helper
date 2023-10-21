@@ -75,7 +75,7 @@ export default class ApiController {
                 json: body,
               }
               // 创建本地Json文件
-              this.apiCreator.setApiItem(apiNode).createJsonFile()
+              this.apiCreator.setApiItem(apiNode as ApiItem).createJsonFile()
 
               resolve(true)
             }
