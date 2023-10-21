@@ -26,7 +26,7 @@ export const COMMAND_ID_IDENTIFIERS = {
   search: 'search',
   /** 清空搜索信息 */
   clear: 'clear',
-  /** 刷新列表信息 */
+  /** 刷新api列表信息 */
   refresh: 'refresh',
   /** 复制api信息 */
   copy: 'copy',

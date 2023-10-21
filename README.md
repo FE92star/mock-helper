@@ -23,9 +23,9 @@ nr release
 - [x] 切换mock数据源
 - [x] 注册command逻辑
 - [x] 入口逻辑
-- [ ] 本地调试
-- [ ] 自动生成api的类型信息并创建打开vscode webview
+- [x] 本地调试
 - [ ] 补充完善文档
+- [ ] 自动生成api的类型信息并创建打开vscode webview
 
 ## 插件功能点
 
