@@ -1,8 +1,8 @@
 import { type ExtensionContext, type WebviewPanel, window } from 'vscode'
 import type ApiItem from '../core/ApiItem'
 
-export default class AmsWebview {
-  static currentPanel: AmsWebview | undefined
+export default class ApiWebview {
+  static currentPanel: ApiWebview | undefined
   private webviews: { wv: WebviewPanel; id: string }[] = []
   private ctx: ExtensionContext | undefined
 

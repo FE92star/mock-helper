@@ -7,7 +7,7 @@ import NodeItem from './NodeItem'
 
 type ProviderItemType = ApiNodeItem | NodeItem
 
-export default class AmsProvider implements TreeDataProvider<ProviderItemType> {
+export default class ApiProvider implements TreeDataProvider<ProviderItemType> {
   private _onDidChangeTreeData: EventEmitter<ProviderItemType | undefined> = new EventEmitter<
     ProviderItemType | undefined
   >()
@@ -55,3 +55,5 @@ export default class AmsProvider implements TreeDataProvider<ProviderItemType> {
     ]
   }
 }
+
+export const apiProvider = new ApiProvider()

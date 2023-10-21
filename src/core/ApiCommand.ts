@@ -1,5 +1,5 @@
 import { ProgressLocation, commands, env, window } from 'vscode'
-import type AmsProvider from '../view/AmsProvider'
+import type ApiProvider from '../view/ApiProvider'
 import { COMMAND_ID_IDENTIFIER, GLOBAL_APP_CONTEXT } from '../adapters'
 import { winError } from '../utils'
 import type ApiNodeItem from '../view/ApiNodeItem'
@@ -12,7 +12,7 @@ import { appSysConfig } from './AppSysConfig'
 */
 export default class ApiCommand {
   constructor(
-    private amsProvider: AmsProvider,
+    private apiProvider: ApiProvider,
     private apiController: ApiController,
     private apiServer: ApiServer,
   ) {
@@ -23,7 +23,7 @@ export default class ApiCommand {
     this.excuteContextCommand(GLOBAL_APP_CONTEXT.serverEnable, false)
     this.excuteContextCommand(GLOBAL_APP_CONTEXT.filterEnable, false)
 
-    this.amsProvider.refresh()
+    this.apiProvider.refresh()
   }
 
   private excuteContextCommand(...rest: any[]) {
@@ -74,7 +74,7 @@ export default class ApiCommand {
   refreshServer() {
     window.withProgress({ location: ProgressLocation.Notification, title: '同步接口列表中...' }, async () => {
       await this.apiController.fetchServerApiData()
-      this.amsProvider.refresh()
+      this.apiProvider.refresh()
     })
   }
 
@@ -100,7 +100,7 @@ export default class ApiCommand {
     this.apiController.query = ''
     // 标记搜索状态关闭
     this.excuteContextCommand(GLOBAL_APP_CONTEXT.filterEnable, false)
-    this.amsProvider.refresh()
+    this.apiProvider.refresh()
   }
 
   /**
@@ -118,7 +118,7 @@ export default class ApiCommand {
 
     if (queryValue !== undefined) {
       this.apiController.query = queryValue
-      this.amsProvider.refresh()
+      this.apiProvider.refresh()
     }
   }
 
