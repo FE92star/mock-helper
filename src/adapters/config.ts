@@ -17,3 +17,9 @@ export const GLOBAL_APP_CONTEXT = {
   /** 是否开始过滤api */
   filterEnable: 'filterEnable',
 }
+
+/** commandId标识符 */
+export const COMMAND_ID_IDENTIFIER = {
+  /** 切换proxy源 */
+  switchProxy: 'switchProxy',
+}

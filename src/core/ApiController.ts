@@ -3,7 +3,7 @@ import type AmsApiItem from '../view/ApiNodeItem'
 import { amsServer } from '../services/AmsServer'
 import { winError } from '../utils'
 import type ApiCreator from './ApiCreator'
-import type ApiItem from './ApiItem'
+import ApiItem from './ApiItem'
 
 /**
  * api控制器
@@ -98,5 +98,45 @@ export default class ApiController {
         ),
       )
     })
+  }
+
+  openApiInBrowser(node: ApiNodeItem) {
+    amsServer.openApi(node.api)
+  }
+
+  /**
+   * 同步刷新平台所有的api数据
+  */
+  async fetchServerApiData() {
+    await amsServer.refreshData()
+    await this.fetchApiList()
+  }
+
+  async fetchApiList() {
+    await amsServer.getApiLists()
+
+    if (!amsServer.amsApiList?.length)
+      return
+
+    this._apiItems = amsServer.amsApiList.map(
+      (item) => {
+        const { _id, project_id, catid, title, path, method, uid, add_time, up_time, status, edit_uid } = item
+
+        return new ApiItem(
+          _id,
+          project_id,
+          catid,
+          title,
+          path,
+          method,
+          uid,
+          add_time,
+          up_time,
+          status,
+          edit_uid,
+          {},
+        )
+      },
+    )
   }
 }

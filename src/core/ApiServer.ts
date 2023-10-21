@@ -464,7 +464,7 @@ export default class ApiServer {
   /**
    * 管理statusBar
   */
-  private updateStatusBar(text?: string, command?: string) {
+  updateStatusBar(text?: string, command?: string) {
     if (command)
       this.statusBarViewItem.command = command
 

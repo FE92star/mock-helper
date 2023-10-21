@@ -53,10 +53,7 @@ export class AmsServer {
     return apiResult
   }
 
-  /**
-   * 打开pannel初始化api文档信息
-  */
-  initApiWhenOpen(apiItem: Yapi.Api.AllApi.Res) {
+  openApi(apiItem: Yapi.Api.AllApi.Res) {
     commands.executeCommand('vscode.open', Uri.parse(appUserConfig.getApiDocUrl(apiItem)))
   }
 }
