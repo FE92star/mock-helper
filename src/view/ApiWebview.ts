@@ -26,3 +26,5 @@ export default class ApiWebview {
     return true
   }
 }
+
+export const apiWebview = new ApiWebview()

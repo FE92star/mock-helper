@@ -1,8 +1,9 @@
 import type { Event, ProviderResult, TreeDataProvider, TreeItem } from 'vscode'
 import { EventEmitter, TreeItemCollapsibleState } from 'vscode'
 import { appSysConfig } from '../core/AppSysConfig'
+import type ApiController from '../core/ApiController'
 import { formatDate, winConsole } from '../utils'
-import type ApiNodeItem from './ApiNodeItem'
+import ApiNodeItem from './ApiNodeItem'
 import NodeItem from './NodeItem'
 
 type ProviderItemType = ApiNodeItem | NodeItem
@@ -13,6 +14,8 @@ export default class ApiProvider implements TreeDataProvider<ProviderItemType> {
   >()
 
   readonly onDidChangeTreeData?: Event<void | ProviderItemType | ProviderItemType[] | null | undefined> | undefined = this._onDidChangeTreeData.event
+
+  constructor(private apiController: ApiController) {}
 
   getTreeItem(element: ProviderItemType): TreeItem | Thenable<TreeItem> {
     return element
@@ -36,6 +39,11 @@ export default class ApiProvider implements TreeDataProvider<ProviderItemType> {
       const amsChildren = this.getAmsChildren(element)
       return Promise.resolve(amsChildren)
     }
+    else {
+      return this.apiController.apiItems.map(
+        item => new ApiNodeItem(item, TreeItemCollapsibleState.Collapsed),
+      )
+    }
   }
 
   private getAmsChildren(el: ProviderItemType): NodeItem[] {
@@ -55,5 +63,3 @@ export default class ApiProvider implements TreeDataProvider<ProviderItemType> {
     ]
   }
 }
-
-export const apiProvider = new ApiProvider()

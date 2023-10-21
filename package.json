@@ -49,8 +49,8 @@
         }
       },
       {
-        "command": "mockHelper.clearApiFilter",
-        "title": "Clear filter",
+        "command": "mockHelper.clear",
+        "title": "Clear filters",
         "shortTitle": "Clear",
         "icon": {
           "dark": "resources/dark/clear.svg",
@@ -85,8 +85,8 @@
         }
       },
       {
-        "command": "mockHelper.openAndUpdateApiJsonToLocal",
-        "title": "Open and update json data to local project",
+        "command": "mockHelper.openJon",
+        "title": "Open JSON File in VSCode",
         "shortTitle": "OpenJson",
         "icon": {
           "dark": "resources/dark/json.svg",
@@ -94,7 +94,16 @@
         }
       },
       {
-        "command": "mockHelper.copyApiInfo",
+        "command": "mockHelper.download",
+        "title": "Download api information and create local json file",
+        "shortTitle": "OpenJson",
+        "icon": {
+          "dark": "resources/dark/download.svg",
+          "light": "resources/light/download.svg"
+        }
+      },
+      {
+        "command": "mockHelper.copy",
         "title": "copy current api infomation",
         "shortTitle": "Copy",
         "icon": {
@@ -126,7 +135,7 @@
           "group": "navigation"
         },
         {
-          "command": "mockHelper.clearApiFilter",
+          "command": "mockHelper.clear",
           "when": "view == mockHelper && filterEnable",
           "group": "navigation"
         }
@@ -138,7 +147,7 @@
           "group": "inline"
         },
         {
-          "command": "mockHelper.copyApiInfo",
+          "command": "mockHelper.copy",
           "when": "view == mockHelper && viewItem == subApiItem",
           "group": "inline"
         }

@@ -1,3 +1,4 @@
+import path from 'node:path'
 import type { Command, TreeItemCollapsibleState } from 'vscode'
 import { TreeItem } from 'vscode'
 import { formatDate } from '../utils'
@@ -37,4 +38,11 @@ export default class ApiNodeItem extends TreeItem {
   get descriptions() {
     return this.api.path
   }
+
+  iconPath = {
+    light: path.join(__dirname, 'resources', 'light/api.svg'),
+    dark: path.join(__filename, 'resources', 'dark/api.svg'),
+  }
+
+  contextValue = 'apiNodeItem'
 }

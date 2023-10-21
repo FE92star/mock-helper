@@ -1,6 +1,6 @@
 import { ProgressLocation, commands, env, window } from 'vscode'
 import type ApiProvider from '../view/ApiProvider'
-import { COMMAND_ID_IDENTIFIER, GLOBAL_APP_CONTEXT } from '../adapters'
+import { COMMAND_SWITCH_PROXY_ID, GLOBAL_APP_CONTEXT } from '../adapters'
 import { winError } from '../utils'
 import type ApiNodeItem from '../view/ApiNodeItem'
 import type ApiController from './ApiController'
@@ -41,7 +41,7 @@ export default class ApiCommand {
           this.excuteContextCommand(GLOBAL_APP_CONTEXT.serverEnable, true)
           // 避免重复注册switchProxy command
           const vscodeCommands = await commands.getCommands(true)
-          const commandId = appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIER.switchProxy)
+          const commandId = appSysConfig.identifierWithDot(COMMAND_SWITCH_PROXY_ID)
 
           if (!vscodeCommands.includes(commandId)) {
             commands.registerCommand(commandId, () => {
