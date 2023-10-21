@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import fs from 'node:fs'
 import axios from 'axios'
-import { winConsole, winError } from '../utils'
+import { winError } from '../utils'
 import { YAPI_LIMIT_DATA, YAPI_OEPNAPI_BASEURL, YAPI_OEPNAPI_LIST_MAP } from '../services/YapiOpenApi'
 import type { MockOptions } from '../services/types'
 import { appSysConfig } from './AppSysConfig'
@@ -16,7 +16,6 @@ export default class AppUserConfig {
   axiosIns = this.createAxiosIns()
 
   constructor() {
-    winConsole(`${this} ==> this`)
     this.config = this.getAppConfig()
   }
 
@@ -113,20 +112,19 @@ export default class AppUserConfig {
   }
 
   /** 获取项目下所有的api */
-  public requestProjectApi({ token }: Yapi.Config.ApiMapItem) {
-    winConsole(`${this}`)
+  public requestProjectApi({ token }: Yapi.Config.ApiMapItem, vm?: AppUserConfig) {
     const apiUrl = YAPI_OEPNAPI_LIST_MAP.apiList.url
 
-    return this.axiosIns({
+    return (vm || this).axiosIns({
       url: `${YAPI_OEPNAPI_BASEURL}${apiUrl}?token=${token}&limit=${YAPI_LIMIT_DATA}`,
     })
   }
 
   /** 获取菜单列表 */
-  requestCatMenu({ token }: Yapi.Config.ApiMapItem) {
+  requestCatMenu({ token }: Yapi.Config.ApiMapItem, vm?: AppUserConfig) {
     const apiUrl = YAPI_OEPNAPI_BASEURL + YAPI_OEPNAPI_LIST_MAP.catMenu.url
 
-    return this.axiosIns({
+    return (vm || this).axiosIns({
       url: `${apiUrl}?token=${token}`,
     })
   }
@@ -182,13 +180,18 @@ export default class AppUserConfig {
     })
   }
 
-  private requestApiList(request: (item: Yapi.Config.ApiMapItem) => Promise<any>) {
+  /**
+   * @param {request.vm} 用于解决函数调用时的this指向问题
+  */
+  private requestApiList(request: (item: Yapi.Config.ApiMapItem, vm?: AppUserConfig) => Promise<any>) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const vm = this
     const apiMapData = this.getAppApiMap
 
     if (!apiMapData.length)
       return Promise.reject(new Error('api数据同步失败'))
 
-    return Promise.all(apiMapData.map(item => request(item)))
+    return Promise.all(apiMapData.map(item => request(item, vm)))
   }
 }
 
