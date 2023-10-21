@@ -77,7 +77,7 @@ export default class ApiCommand {
   }
 
   refreshServer() {
-    window.withProgress({ location: ProgressLocation.Notification, title: '同步接口列表中...' }, async () => {
+    window.withProgress({ location: ProgressLocation.Notification, title: '正在同步接口列表中...' }, async () => {
       await this.apiController.fetchServerApiData()
       this.apiProvider.refresh()
     })

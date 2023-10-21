@@ -1,5 +1,4 @@
 import { type ExtensionContext, commands, window } from 'vscode'
-import { winConsole } from './utils'
 import { apiWebview } from './view/ApiWebview'
 import ApiCreator from './core/ApiCreator'
 import ApiController from './core/ApiController'
@@ -27,7 +26,8 @@ function getAppCommandsMap(apiCommand: ApiCommand) {
 }
 
 export function activate(ctx: ExtensionContext) {
-  winConsole('插件启动中...')
+  // eslint-disable-next-line no-console
+  console.log('插件启动中...')
 
   apiWebview.setContext(ctx)
 
