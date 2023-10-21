@@ -34,7 +34,6 @@ export function activate(ctx: ExtensionContext) {
   // 初始化同步api数据
   const apiCreator = new ApiCreator()
   const apiController = new ApiController(apiCreator)
-  // TODO-目前同步信息流程卡在这里，需要调试看一下问题
   apiController.fetchServerApiData()
 
   // 创建视图
@@ -50,7 +49,6 @@ export function activate(ctx: ExtensionContext) {
   for (const [name, cb] of Object.entries(appCommandsMap))
     registerTargetCommand(appSysConfig.identifierWithDot(name), cb)
 
-  // TODO-调试过程中可以先注释这个逻辑
   if (!apiController.apiItems.length)
     apiCommand.refreshServer()
 }
