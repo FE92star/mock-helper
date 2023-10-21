@@ -142,13 +142,18 @@
       ],
       "view/item/context": [
         {
-          "command": "mockHelper.openAndUpdateApiJsonToLocal",
-          "when": "view == mockHelper && viewItem == coreApiItem",
+          "command": "mockHelper.download",
+          "when": "view == mockHelper && viewItem == apiNodeItem",
           "group": "inline"
         },
         {
           "command": "mockHelper.copy",
-          "when": "view == mockHelper && viewItem == subApiItem",
+          "when": "view == mockHelper && viewItem == nodeItem",
+          "group": "inline"
+        },
+        {
+          "command": "mockHelper.openJon",
+          "when": "view == mockHelper && viewItem == apiNodeItem",
           "group": "inline"
         }
       ]
@@ -169,7 +174,7 @@
         "mockHelper.mock.autoRun": {
           "type": "boolean",
           "default": false,
-          "description": "是否在应用启动时启用 mock"
+          "description": "是否在应用启动时启用 mock插件"
         },
         "mockHelper.mock.apiPrefixs": {
           "type": "array",

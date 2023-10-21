@@ -1,6 +1,6 @@
 import { ProgressLocation, commands, env, window } from 'vscode'
 import type ApiProvider from '../view/ApiProvider'
-import { COMMAND_SWITCH_PROXY_ID, GLOBAL_APP_CONTEXT } from '../adapters'
+import { COMMAND_SWITCH_PROXY_ID, GLOBAL_APP_CONTEXT, MOCK_CONFIG_NAME } from '../adapters'
 import { winError } from '../utils'
 import type ApiNodeItem from '../view/ApiNodeItem'
 import type ApiController from './ApiController'
@@ -17,6 +17,11 @@ export default class ApiCommand {
     private apiServer: ApiServer,
   ) {
     this.onActiveEditorChange()
+
+    // 自动开启插件应用
+    const isServerAutoRun = appSysConfig.getConfiguration(MOCK_CONFIG_NAME.autoRun)
+    if (isServerAutoRun)
+      this.runServer()
   }
 
   private onActiveEditorChange() {
