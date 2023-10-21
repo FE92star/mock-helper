@@ -8,22 +8,24 @@ import ApiServer from './core/ApiServer'
 import ApiCommand from './core/ApiCommand'
 import { appSysConfig } from './core/AppSysConfig'
 
-function registerTargetCommand(name: string, cb: (...args: any[]) => any) {
-  commands.registerCommand(name, cb)
-}
+// function registerTargetCommand(name: string, cb: (...args: any[]) => any, ctx: ExtensionContext) {
+//   commands.registerCommand(name, () => {
+//     cb.apply(ctx)
+//   })
+// }
 
-function getAppCommandsMap(apiCommand: ApiCommand) {
-  return {
-    [COMMAND_ID_IDENTIFIERS.refresh]: apiCommand.refreshServer,
-    [COMMAND_ID_IDENTIFIERS.clear]: apiCommand.clearApiFilters,
-    [COMMAND_ID_IDENTIFIERS.search]: apiCommand.addApiFilters,
-    [COMMAND_ID_IDENTIFIERS.runServer]: apiCommand.runServer,
-    [COMMAND_ID_IDENTIFIERS.stopServer]: apiCommand.stopServer,
-    [COMMAND_ID_IDENTIFIERS.download]: apiCommand.downloadApiJson,
-    [COMMAND_ID_IDENTIFIERS.openJon]: apiCommand.openJsonInVscode,
-    [COMMAND_ID_IDENTIFIERS.copy]: apiCommand.copyApiUrl,
-  }
-}
+// function getAppCommandsMap(apiCommand: ApiCommand) {
+//   return {
+//     [COMMAND_ID_IDENTIFIERS.refresh]: apiCommand.refreshServer,
+//     [COMMAND_ID_IDENTIFIERS.clear]: apiCommand.clearApiFilters,
+//     [COMMAND_ID_IDENTIFIERS.search]: apiCommand.addApiFilters,
+//     [COMMAND_ID_IDENTIFIERS.runServer]: apiCommand.runServer,
+//     [COMMAND_ID_IDENTIFIERS.stopServer]: apiCommand.stopServer,
+//     [COMMAND_ID_IDENTIFIERS.download]: apiCommand.downloadApiJson,
+//     [COMMAND_ID_IDENTIFIERS.openJon]: apiCommand.openJsonInVscode,
+//     [COMMAND_ID_IDENTIFIERS.copy]: apiCommand.copyApiUrl,
+//   }
+// }
 
 export function activate(ctx: ExtensionContext) {
   // eslint-disable-next-line no-console
@@ -44,10 +46,37 @@ export function activate(ctx: ExtensionContext) {
   const apiServer = new ApiServer(apiController)
   const apiCommand = new ApiCommand(apiProvider, apiController, apiServer)
 
-  const appCommandsMap = getAppCommandsMap(apiCommand)
+  // const appCommandsMap = getAppCommandsMap(apiCommand)
 
-  for (const [name, cb] of Object.entries(appCommandsMap))
-    registerTargetCommand(appSysConfig.identifierWithDot(name), cb)
+  // for (const [name, cb] of Object.entries(appCommandsMap))
+  //   registerTargetCommand(appSysConfig.identifierWithDot(name), cb, ctx)
+
+  // tips-解决实例调用方法的this指向问题
+  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.search), () => {
+    apiCommand.addApiFilters()
+  })
+
+  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.refresh), () => {
+    apiCommand.refreshServer()
+  })
+
+  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.clear), () => {
+    apiCommand.clearApiFilters()
+  })
+
+  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.runServer), () => {
+    apiCommand.runServer()
+  })
+
+  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.stopServer), () => {
+    apiCommand.stopServer()
+  })
+
+  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.download), apiCommand.downloadApiJson)
+
+  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.openJon), apiCommand.openJsonInVscode)
+
+  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.copy), apiCommand.copyApiUrl)
 
   if (!apiController.apiItems.length)
     apiCommand.refreshServer()
