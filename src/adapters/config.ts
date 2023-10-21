@@ -9,3 +9,11 @@ export const MOCK_CONFIG_NAME = {
   autoRun: 'mock.autoRun',
   apiPrefixs: 'mock.apiPrefixs',
 }
+
+/** 全局应用上下文状态 */
+export const GLOBAL_APP_CONTEXT = {
+  /** server是否启动 */
+  serverEnable: 'serverEnable',
+  /** 是否开始过滤api */
+  filterEnable: 'filterEnable',
+}

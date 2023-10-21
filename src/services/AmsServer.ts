@@ -1,8 +1,9 @@
-import { Uri, commands, window } from 'vscode'
+import { Uri, commands } from 'vscode'
 import type ApiItem from '../core/ApiItem'
 import { appSysConfig } from '../core/AppSysConfig'
 import { appUserConfig } from '../core/AppUserConfig'
 import { apiAdapters } from '../adapters'
+import { winWarn } from '../utils'
 import type { MockOptions } from './types'
 
 export class AmsServer {
@@ -19,7 +20,7 @@ export class AmsServer {
 
   async refreshData() {
     await appUserConfig.resetAppConfig().catch((err: any) => {
-      window.showWarningMessage(err.message || '刷新失败')
+      winWarn(err || '刷新失败')
     })
   }
 

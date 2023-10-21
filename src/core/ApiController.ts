@@ -1,6 +1,7 @@
 import { ProgressLocation, window } from 'vscode'
 import type AmsApiItem from '../view/ApiNodeItem'
 import { amsServer } from '../services/AmsServer'
+import { winError } from '../utils'
 import type ApiCreator from './ApiCreator'
 import type ApiItem from './ApiItem'
 
@@ -87,7 +88,7 @@ export default class ApiController {
 
               this.apiCreator.setApiItem(apiNode).createJsonFile()
 
-              window.showErrorMessage(
+              winError(
                 `${title} 接口为空或不符合JSON格式规范，请联系服务端修复后重试`,
               )
 

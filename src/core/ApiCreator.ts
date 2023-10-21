@@ -2,7 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { Uri, window } from 'vscode'
 import { MOCK_CONFIG_NAME, pathAdapters } from '../adapters'
-import { readJsonFile, writeJsonFile } from '../utils'
+import { readJsonFile, winError, writeJsonFile } from '../utils'
 import type ApiItem from './ApiItem'
 import { appSysConfig } from './AppSysConfig'
 
@@ -47,7 +47,7 @@ export default class ApiCreator {
     if (!fs.existsSync(apiJsonPath))
       return
     const oldJsonBodyStr = await readJsonFile(apiJsonPath).catch((e) => {
-      window.showErrorMessage(`读取 ${e} 文件失败，请检查`)
+      winError(`读取 ${e} 文件失败，请检查`)
     })
     const oldJsonBody = oldJsonBodyStr ? JSON.parse(oldJsonBodyStr) : {}
 

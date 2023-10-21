@@ -1,7 +1,20 @@
+import { window } from 'vscode'
 import { APP_NAME_PREFIX } from '../adapters'
 
-export function warn(msg: string) {
+export function prefixingMsg(msg: string) {
   return `${APP_NAME_PREFIX}${msg}`
+}
+
+export function winError(msg: string) {
+  return window.showErrorMessage(prefixingMsg(msg))
+}
+
+export function winWarn(msg: string) {
+  return window.showWarningMessage(prefixingMsg(msg))
+}
+
+export function winConsole(msg: string) {
+  return window.showInformationMessage(prefixingMsg(msg))
 }
 
 export function formatDate(timestamp: number) {

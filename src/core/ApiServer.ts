@@ -10,6 +10,7 @@ import { type Key, pathToRegexp } from 'path-to-regexp'
 import { MOCK_CONFIG_NAME, pathAdapters, urlAdapters, yapiMockDataAdapters } from '../adapters'
 import { amsServer } from '../services/AmsServer'
 import ApiNodeItem from '../view/ApiNodeItem'
+import { winError } from '../utils'
 import type ApiController from './ApiController'
 import { BASIC_MOCK_PICK_OPTIONS, MOCK_ACTION_TYPE, MOCK_ACTION_TYPE_DESC, MOCK_ACTION_TYPE_NAME, STATUS_CODE } from './type'
 import { appSysConfig } from './AppSysConfig'
@@ -419,6 +420,7 @@ export default class ApiServer {
   }
 
   /**
+   * 自定义代理地址模式/代理环境选择模式(域名代理)
    * 创建代理服务器，参数value可传几种类型
    * 1. 自定义域名/ip字符串 http://195.88.66
    * 2. httpProxy.ServerOptions
@@ -428,7 +430,7 @@ export default class ApiServer {
     const proxyServer = httpProxy.createProxyServer()
     // 监听代理错误事件
     proxyServer.on('error', (e) => {
-      window.showErrorMessage(e.message)
+      winError(e.message)
     })
     // 监听代理响应事件
     proxyServer.on('proxyRes', allowCorsOrigin)

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import fs from 'node:fs'
-import { window } from 'vscode'
 import * as rp from 'request-promise-native'
-import { warn } from '../utils'
+import { winError } from '../utils'
 import { YAPI_LIMIT_DATA, YAPI_OEPNAPI_BASEURL, YAPI_OEPNAPI_LIST_MAP } from '../services/YapiOpenApi'
 import type { MockOptions } from '../services/types'
 import { appSysConfig } from './AppSysConfig'
@@ -44,7 +43,7 @@ export default class AppUserConfig {
       return appConfig
     }
     catch (error) {
-      window.showErrorMessage(`${warn('读取配置文件失败')}`)
+      winError('读取配置文件失败')
       return null
     }
   }
@@ -61,11 +60,11 @@ export default class AppUserConfig {
   */
   private validateAppConfig(configJson: Yapi.Config.Json) {
     if (!configJson)
-      throw new Error(`${warn('启动本插件前请先在项目根目录下创建mock.config.json')}`)
+      throw new Error('启动本插件前请先在项目根目录下创建mock.config.json')
 
     const isEmptyKey = Object.values(configJson).some(v => !v)
     if (isEmptyKey)
-      throw new Error(warn('请完善配置文件的相关字段'))
+      throw new Error('请完善配置文件的相关字段')
 
     return Promise.resolve()
   }
@@ -73,8 +72,8 @@ export default class AppUserConfig {
   public async resetAppConfig() {
     const conf = this.getAppConfig()
 
-    await this.validateAppConfig(conf).catch(() => {
-      window.showWarningMessage(warn('请完善配置文件的相关字段'))
+    await this.validateAppConfig(conf).catch((err) => {
+      winError(err)
     })
   }
 
@@ -100,7 +99,7 @@ export default class AppUserConfig {
    */
   getApiConfigByPath(path: string) {
     if (!this.getAppApiMap.length)
-      throw new Error(warn('同步失败'))
+      throw new Error('同步失败')
 
     return this.getAppApiMap.find((item) => {
       const { apiPrefix } = item
@@ -152,7 +151,7 @@ export default class AppUserConfig {
     const apiConfig = this.getApiConfigByPath(path)
 
     if (!apiConfig)
-      return Promise.reject(new Error(warn('请完善配置文件信息')))
+      return Promise.reject(new Error('请完善配置文件信息'))
 
     const { token } = apiConfig
 
@@ -170,7 +169,7 @@ export default class AppUserConfig {
     const apiConfig = this.getApiConfigByPath(path)
 
     if (!apiConfig) {
-      window.showErrorMessage(warn('请完善配置文件信息'))
+      winError('请完善配置文件信息')
       return
     }
 
@@ -185,7 +184,7 @@ export default class AppUserConfig {
     const apiMapData = this.getAppApiMap
 
     if (!apiMapData.length)
-      return Promise.reject(new Error(warn('同步失败')))
+      return Promise.reject(new Error('同步失败'))
 
     return Promise.all(apiMapData.map(item => request(item)))
   }

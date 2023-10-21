@@ -1,7 +1,7 @@
 import type { Event, ProviderResult, TreeDataProvider, TreeItem } from 'vscode'
-import { EventEmitter, TreeItemCollapsibleState, window } from 'vscode'
+import { EventEmitter, TreeItemCollapsibleState } from 'vscode'
 import { appSysConfig } from '../core/AppSysConfig'
-import { formatDate, warn } from '../utils'
+import { formatDate, winConsole } from '../utils'
 import type ApiNodeItem from './ApiNodeItem'
 import NodeItem from './NodeItem'
 
@@ -27,7 +27,7 @@ export default class AmsProvider implements TreeDataProvider<ProviderItemType> {
 
   getChildren(element?: ProviderItemType | undefined): ProviderResult<ProviderItemType[]> {
     if (!appSysConfig.rootPath) {
-      window.showInformationMessage(warn('工作区为空'))
+      winConsole('工作区为空')
 
       return Promise.resolve([])
     }
