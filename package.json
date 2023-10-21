@@ -168,7 +168,7 @@
         },
         "mockHelper.mock.port": {
           "type": "number",
-          "default": 10088,
+          "default": 10086,
           "description": "mock 服务监听的端口"
         },
         "mockHelper.mock.autoRun": {

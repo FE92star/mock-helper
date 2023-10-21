@@ -36,6 +36,6 @@
         "target": "https://prod.example.com"
       }
     ],
-    "port": 10240
+    "port": 10086
   }
 }

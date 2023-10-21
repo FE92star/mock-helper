@@ -12,26 +12,64 @@ nr release
 
 ## TODO
 
-- [x] 开发工程搭建
-- [x] 知识准备—熟悉掌握vscode插件开发流程、mock服务器开发原理
-- [x] 梳理并罗列插件功能点
-- [x] 整理yapi的开放API
-- [x] yapi平台开放api获取服务
-- [x] 创建本地json数据
-- [x] 视图相关
-- [x] 核心代理服务
-- [x] 切换mock数据源
-- [x] 注册command逻辑
-- [x] 入口逻辑
-- [x] 本地调试
-- [ ] 补充完善文档
 - [ ] 自动生成api的类型信息并创建打开vscode webview
 
 ## 插件功能点
 
-1. 通过项目本地`mock.config.json`数据实现可配置化
-2. 自动创建接口本地`mock/json`文件，实现本地数据的mock
-3. 可以自由切换mock数据源
+1. 通过项目本地`mock.config.json`实现代理信息可配置化
+2. 自动创建接口本地`mock*/.json`文件，实现本地数据的mock，也支持`.js`文件
+3. 自由切换mock数据源
+
+## 配置文件类型定义
+
+```ts
+interface MockConfigJSON {
+  /** 服务信息映射数组 */
+  apiMaps?: ApiMapItem[]
+  /** Yapi服务地址 */
+  baseUrl: string
+  /** 代理地址数组 */
+  proxy: {
+    /** 代理目标地址 */
+    targets: Target[]
+    /** 端口号 */
+    port: number
+  }
+}
+
+interface ApiMapItem {
+  /** 服务下的api前缀 */
+  apiPrefix: string | string[]
+  /** 服务对应的项目编号 */
+  projectId: number | string
+  /** 服务对应的开放api token */
+  token: string
+}
+
+interface Target {
+  /** 代理环境名称 */
+  name: string
+  /** 代理环境地址 | 同一个环境代理多个域名 */
+  target: string | {
+    /** 匹配规则 */
+    match: string
+    /** 代理环境地址 */
+    target: string
+  }[]
+  /** 是否为默认代理环境 */
+  default?: boolean | 0 | 1
+}
+```
+
+## 注意
+
+* 项目代理`proxy`的相关配置，需要用户根据项目的实际情况进行配置，即本插件只是在本地运行了一个`http`服务器拦截所有的请求，用户的项目需要配置`proxy`到这个服务器的地址来，才能完成整个代理流程。
+
+```js
+// port即是mock.config.json配置的proxy.port，默认10086
+proxy.target = `http://127.0.0.1:${port}` || `http://localhost:${port}`
+```
+
 
 ## 参考资料
 
