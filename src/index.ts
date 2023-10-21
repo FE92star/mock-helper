@@ -72,6 +72,7 @@ export function activate(ctx: ExtensionContext) {
     apiCommand.stopServer()
   })
 
+  // TODO-需要验证这3个command对应的事件，this指向是否正确
   commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.download), apiCommand.downloadApiJson)
 
   commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.openJon), apiCommand.openJsonInVscode)
