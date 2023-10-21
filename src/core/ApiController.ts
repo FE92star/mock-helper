@@ -1,7 +1,7 @@
 import { ProgressLocation, window } from 'vscode'
-import type AmsApiItem from '../view/ApiNodeItem'
 import { amsServer } from '../services/AmsServer'
 import { winError } from '../utils'
+import type ApiNodeItem from '../view/ApiNodeItem'
 import type ApiCreator from './ApiCreator'
 import ApiItem from './ApiItem'
 
@@ -40,7 +40,7 @@ export default class ApiController {
   /**
    * 打开目标api对应的json文件
   */
-  async openTargetJsonFile(node: AmsApiItem) {
+  async openTargetJsonFile(node: ApiNodeItem) {
     // 如果文件已创建，则直接打开，否则先创建再打开
     if (this.apiCreator.setApiItem(node.api).isExistApiJsonFile)
       this.apiCreator.openJSONFile(node.api)
@@ -53,7 +53,7 @@ export default class ApiController {
   /**
    * 同步对应的api信息
   */
-  fetchTargetApiInfo(node: AmsApiItem, mockUrl = '') {
+  fetchTargetApiInfo(node: ApiNodeItem, mockUrl = '') {
     const msg = 'Sync: 同步云端接口信息中...'
 
     return new Promise((resolve, reject) => {
