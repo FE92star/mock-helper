@@ -2,7 +2,7 @@
   "publisher": "fe92star",
   "name": "yapi-mock-server",
   "displayName": "yapi-mock-server",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "packageManager": "pnpm@8.6.0",
   "description": "Mock server for yapi platform",
