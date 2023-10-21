@@ -71,7 +71,9 @@ export default class ApiServer {
     // 默认MOCK缓存模式
     this.proxyHandler = this.mockCacheHandler
     try {
-      this.server = http.createServer(this.serverProxyHandler)
+      this.server = http.createServer((req, res) => {
+        this.serverProxyHandler(req, res)
+      })
 
       let _mockPort = mockPort
       let _defaultProxyInfo = { name: MOCK_ACTION_TYPE_NAME[MOCK_ACTION_TYPE.MOCK] }
