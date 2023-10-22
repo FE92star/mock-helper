@@ -40,7 +40,7 @@
     },
     "commands": [
       {
-        "command": "extension.helloWorld",
+        "command": "mockHelper.helloWorld",
         "title": "Hello World"
       },
       {
