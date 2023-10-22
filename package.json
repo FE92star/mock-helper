@@ -27,7 +27,7 @@
     "dist"
   ],
   "engines": {
-    "vscode": "^1.78.1"
+    "vscode": "^1.83.1"
   },
   "contributes": {
     "views": {
