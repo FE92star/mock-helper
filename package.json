@@ -29,6 +29,9 @@
   "engines": {
     "vscode": "^1.83.1"
   },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "views": {
       "explorer": [
