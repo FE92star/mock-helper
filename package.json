@@ -29,9 +29,6 @@
   "engines": {
     "vscode": "^1.78.1"
   },
-  "activationEvents": [
-    "onView:mockHelper"
-  ],
   "contributes": {
     "views": {
       "explorer": [
