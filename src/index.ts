@@ -51,33 +51,32 @@ export function activate(ctx: ExtensionContext) {
   // for (const [name, cb] of Object.entries(appCommandsMap))
   //   registerTargetCommand(appSysConfig.identifierWithDot(name), cb, ctx)
 
-  // tips-解决实例调用方法的this指向问题
-  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.search), () => {
-    apiCommand.addApiFilters()
-  })
+  /**
+   * 所有注册的指令统一收集到订阅中去
+  */
+  ctx.subscriptions.push(
+    // tips-解决实例调用方法的this指向问题
+    commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.search), () => {
+      apiCommand.addApiFilters()
+    }),
+    commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.refresh), () => {
+      apiCommand.refreshServer()
+    }),
+    commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.clear), () => {
+      apiCommand.clearApiFilters()
+    }),
+    commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.runServer), () => {
+      apiCommand.runServer()
+    }),
+    commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.stopServer), () => {
+      apiCommand.stopServer()
+    }),
 
-  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.refresh), () => {
-    apiCommand.refreshServer()
-  })
-
-  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.clear), () => {
-    apiCommand.clearApiFilters()
-  })
-
-  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.runServer), () => {
-    apiCommand.runServer()
-  })
-
-  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.stopServer), () => {
-    apiCommand.stopServer()
-  })
-
-  // TODO-需要验证这3个command对应的事件，this指向是否正确
-  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.download), apiCommand.downloadApiJson)
-
-  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.openJon), apiCommand.openJsonInVscode)
-
-  commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.copy), apiCommand.copyApiUrl)
+    // TODO-需要验证这3个command对应的事件，this指向是否正确
+    commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.download), apiCommand.downloadApiJson),
+    commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.openJon), apiCommand.openJsonInVscode),
+    commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.copy), apiCommand.copyApiUrl),
+  )
 
   if (!apiController.apiItems.length)
     apiCommand.refreshServer()
