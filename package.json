@@ -2,7 +2,7 @@
   "publisher": "fe92star",
   "name": "yapi-mock-server",
   "displayName": "yapi-mock-server",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": true,
   "packageManager": "pnpm@8.6.0",
   "description": "Mock server for yapi platform",
@@ -39,6 +39,10 @@
       ]
     },
     "commands": [
+      {
+        "command": "mockHelper.helloWorld",
+        "title": "Hello World"
+      },
       {
         "command": "mockHelper.search",
         "title": "Search for matching api",
