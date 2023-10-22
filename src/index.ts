@@ -55,7 +55,11 @@ export function activate(ctx: ExtensionContext) {
    * 所有注册的指令统一收集到订阅中去
   */
   ctx.subscriptions.push(
-    // tips-解决实例调用方法的this指向问题
+    // test command
+    commands.registerCommand(appSysConfig.identifierWithDot('helloWorld'), () => {
+      window.showInformationMessage('Hello World!')
+    }),
+
     commands.registerCommand(appSysConfig.identifierWithDot(COMMAND_ID_IDENTIFIERS.search), () => {
       apiCommand.addApiFilters()
     }),
