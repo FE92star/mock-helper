@@ -56,7 +56,7 @@ export function activate(ctx: ExtensionContext) {
   */
   ctx.subscriptions.push(
     // test command
-    commands.registerCommand(appSysConfig.identifierWithDot('helloWorld'), () => {
+    commands.registerCommand('mockHelper.helloWorld', () => {
       window.showInformationMessage('Hello World!')
     }),
 
